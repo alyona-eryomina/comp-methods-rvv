@@ -1,8 +1,6 @@
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "comp_methods_ref.h"
 
-extern void rlagrange(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength) {
+void refLagrange(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength) {
     float x, y;
     float lNumerator, lDenominator;
     float Lnx;

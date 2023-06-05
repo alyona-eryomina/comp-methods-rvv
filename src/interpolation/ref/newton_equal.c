@@ -1,25 +1,25 @@
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "comp_methods_ref.h"
 
-void newton_equal_nodes_back(float* src, float* dst, uint32_t length, float pointX, float pointStep, float* pointY, uint32_t pointLength)
+void refNewtonEqual(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength)
 {
     float* buf_f = (float*)malloc(sizeof(float) * pointLength);
     float mul = 1.0f;
     float q = 0.0;
 
+    float h = pointX[1] - pointX[0];
+
     // таблица вычисляется независимо от числа неизвестных точек
     // fill the table
     for (int i = 0; i < pointLength; ++i)
     {
-        buf_f[i] = pointY[pointLength - 1 - i];
+        buf_f[i] = pointY[i];
     }
 
     for (int i = 1; i < pointLength; ++i)
     {
         for (int j = pointLength - 1; j >= i; --j)
         {
-            buf_f[j] = (buf_f[j-1] - buf_f[j]) / pointStep;
+            buf_f[j] = (buf_f[j] - buf_f[j-1]);
         }
     }
 
@@ -27,25 +27,14 @@ void newton_equal_nodes_back(float* src, float* dst, uint32_t length, float poin
     {
         dst[i] = buf_f[0];
         mul = 1.0f;
-        q = (src[i] - (pointX + (pointLength - 1) * pointStep)) / pointStep;
+        q = (src[i] - pointX[0]) / h;
 
         for (int j = 1; j < pointLength; ++j)
         {
             mul *= q / j;
             dst[i] += mul * buf_f[j];
-            q++;
+            q--;
         }
     }
     free(buf_f);
-}
-
-int main()
-{
-    float pointX = 0;
-    float step = 1;
-    float pointY[6] = {0, 1, 8, 27, 64, 125};
-    float src[2] = {1.5f, 4.5f}, dst[2];
-    newton_equal_nodes_back(src, dst, 2, pointX, step, pointY, 6);
-    printf("res = %f, %f\n", dst[0], dst[1]);
-    return 0;
 }

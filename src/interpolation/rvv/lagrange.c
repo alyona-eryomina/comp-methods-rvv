@@ -1,18 +1,12 @@
-#include <stdint.h>
-#include <riscv_vector.h>
-#include <stdio.h>
+#include "comp_methods_rvv.h"
 
-extern void lagrange(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength) {
-    float x, y;
-    float lNumerator, lDenominator;
-    float Lnx;
-
+void Lagrange(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength) {
     size_t len = length;
     size_t offset = 0;
 
     vfloat32m8_t vX, vY;
     vfloat32m8_t vLNumerator, vLDenominator;
-    vfloat32m8_t vPointXIndex, vPointX, vPointY;
+    vfloat32m8_t vPointXIndex;
     vfloat32m8_t vLnx;
     vfloat32m8_t v1, v2;
 
@@ -48,18 +42,18 @@ extern void lagrange(float* src, float* dst, uint32_t length, float* pointX, flo
     }
 }
 
-int main()
-{
-    float src[4] = {1, 2, 3, 4};
-    float dst[4];
-    float pX[5] = {0, 2, 4, 6, 8};
-    float pY[5] = {0, 4, 16, 36, 64};
-    lagrange(src, dst, 4, pX, pY, 5);
+// int main()
+// {
+//     float src[4] = {1, 2, 3, 4};
+//     float dst[4];
+//     float pX[5] = {0, 2, 4, 6, 8};
+//     float pY[5] = {0, 4, 16, 36, 64};
+//     lagrange(src, dst, 4, pX, pY, 5);
 
-    for (int i = 0; i < 4; i++) {
-        printf("%f ", dst[i]);
-    }
-    printf("\n");
+//     for (int i = 0; i < 4; i++) {
+//         printf("%f ", dst[i]);
+//     }
+//     printf("\n");
 
-    return 0;
-}
+//     return 0;
+// }

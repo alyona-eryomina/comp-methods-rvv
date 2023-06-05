@@ -1,8 +1,6 @@
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "comp_methods_ref.h"
 
-void newton_unequal_nodes(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength)
+void refNewtonUnequal(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength)
 {
     float* buf_f = (float*)malloc(sizeof(float) * pointLength);
     float mul = 1.0f;
@@ -34,14 +32,4 @@ void newton_unequal_nodes(float* src, float* dst, uint32_t length, float* pointX
         }
     }
     free(buf_f);
-}
-
-int main()
-{
-    float pointX[4] = {0, 2, 3, 5};
-    float pointY[4] = {1, 3, 2, 5};
-    float src[1] = {4}, dst[1];
-    newton_unequal_nodes(src, dst, 1, pointX, pointY, 4);
-    printf("res = %f\n", dst[0]);
-    return 0;
 }

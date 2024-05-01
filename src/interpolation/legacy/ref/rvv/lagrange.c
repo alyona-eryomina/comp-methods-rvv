@@ -1,6 +1,6 @@
-#include "comp_methods_rvv.h"
+#include <riscv_vector.h>
 
-void Lagrange(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength) {
+inline void lagrange_rvv(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength) {
     size_t len = length;
     size_t offset = 0;
 

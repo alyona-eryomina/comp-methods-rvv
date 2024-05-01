@@ -1,6 +1,6 @@
-#include "comp_methods_ref.h"
+#include "comp_methods.h"
 
-void refLagrange(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength) {
+extern void lagrange(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength) {
     float x, y;
     float lNumerator, lDenominator;
     float Lnx;

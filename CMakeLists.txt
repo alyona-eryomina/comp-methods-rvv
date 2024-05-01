@@ -1,31 +1,49 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.20)
 
-project(comp-methods)
+if(DEFINED BUILD_FOR_ARCH)
+    if(${BUILD_FOR_ARCH} MATCHES "RISCV.*")
+        message(STATUS "Selected riscv64-linux-gcc.cmake toolchain")
+        set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/cmake/riscv64-linux-gcc.cmake")
+    else()
+        message(FATAL_ERROR "Unknown platform")
+    endif()
 
-# set(CMAKE_BUILD_TYPE Release)
+    if(${BUILD_FOR_ARCH} STREQUAL "RISCV")
+        message(STATUS "Selected RISCV LP4 platform with bit manipulations")
+        set(ARCH_BUILD_FLAGS -O3 -march=rv64gc_xtheadba1p0_xtheadbb1p0_xtheadbs1p0)
+        set(ARCH_SPECIFIC_DEFINITIONS RISC_BM)
+    elseif(${BUILD_FOR_ARCH} STREQUAL "RISCV_RVV")
+        message(STATUS "Selected RISCV LP4 platform with RVV")
+        set(ARCH_BUILD_FLAGS -O3 -march=rv64gcv0p7_xtheadba1p0_xtheadbb1p0_xtheadbs1p0)
+        set(ARCH_SPECIFIC_DEFINITIONS RISC_SIMD_BM)
+    elseif(${BUILD_FOR_ARCH} STREQUAL "RISCV_RVV_ASM")
+        message(STATUS "Selected RISCV LP4 platform with RVV")
+        set(ARCH_BUILD_FLAGS -O3 -march=rv64gcv0p7_xtheadba1p0_xtheadbb1p0_xtheadbs1p0)
+        set(ARCH_SPECIFIC_DEFINITIONS RISC_SIMD_BM)
+    elseif(${BUILD_FOR_ARCH} STREQUAL "RISCV_COMP_RVV")
+        message(STATUS "Selected RISCV LP4 platform with compiler RVV")
+        set(ARCH_BUILD_FLAGS -O3 -march=rv64gcv0p7_xtheadba1p0_xtheadbb1p0_xtheadbs1p0)
+        set(ARCH_SPECIFIC_DEFINITIONS RISC_SIMD_BM)
+    else()
+        message(FATAL_ERROR "Unknown platform")
+    endif()
+else()
+    message(STATUS "Default build for x86 architecture")
+endif()
 
-# set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
-add_definitions(-DRVV -march=rv64gcv -Wall)
+project(comp-methods C ASM)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_BUILD_TYPE Release)
+
+if(DEFINED ARCH_BUILD_FLAGS)
+    add_compile_options(${ARCH_BUILD_FLAGS})
+endif()
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/3rd-party/googletest)
+add_subdirectory(${CMAKE_SOURCE_DIR}/3rd-party/benchmark)
 
 include_directories("include/")
-
-set(SOURCE_LIB src/interpolation/rvv/lagrange.c
-               src/interpolation/rvv/newton_equal.c
-               src/interpolation/rvv/newton_unequal.c
-               src/interpolation/rvv/spline_lin.c
-               src/interpolation/rvv/spline_par.c
-               src/interpolation/rvv/spline_cub.c)
-
-set(SOURCE_REF src/interpolation/ref/lagrange.c
-               src/interpolation/ref/newton_equal.c
-               src/interpolation/ref/newton_unequal.c
-               src/interpolation/ref/spline_lin.c
-               src/interpolation/ref/spline_par.c
-               src/interpolation/ref/spline_cub.c)
-
-add_library(${PROJECT_NAME} STATIC ${SOURCE_LIB})
-
-add_library(${PROJECT_NAME}-ref STATIC ${SOURCE_REF})
+add_subdirectory(src)
 
 add_subdirectory(tests)
 add_subdirectory(perf)

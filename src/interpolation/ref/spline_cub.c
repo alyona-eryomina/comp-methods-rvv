@@ -1,71 +1,48 @@
-#include "comp_methods_ref.h"
+#include "interpolation.h"
 
-extern void refSplineCub(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength)
+extern inline void spline_cub(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength, SplineCubBuf* buf)
 {
-    float* a = (float*)malloc(sizeof(float) * (pointLength));
-    float* b = (float*)malloc(sizeof(float) * (pointLength));
-    float* c = (float*)malloc(sizeof(float) * (pointLength));
-
     float h = pointX[1] - pointX[0];
     uint32_t index;
 
-    // compute b
-    float* va = (float*)malloc(sizeof(float) * (pointLength));
-    float* vb = (float*)malloc(sizeof(float) * (pointLength));
-    float* vc = (float*)malloc(sizeof(float) * (pointLength));
-    float* F  = (float*)malloc(sizeof(float) * (pointLength));
     float coef = 3/(h*h);
     for (index = 1; index < pointLength - 1; index++)
     {
-        va[index] = 1.0f;
-        vb[index] = 4.0f;
-        vc[index] = 1.0f;
-        F[index] = coef * (pointY[index-1] - 2*pointY[index] + pointY[index+1]);
+        buf->va[index] = 1.0f;
+        buf->vb[index] = 4.0f;
+        buf->vc[index] = 1.0f;
+        buf->F[index] = coef * (pointY[index-1] - 2*pointY[index] + pointY[index+1]);
     }
-    va[0] = 0.0f; vb[0] = 1.0f; vc[0] = 0.0f; F[0] = 0.0f;
-    va[pointLength - 1] = 0.0f;
-    vb[pointLength - 1] = 1.0f;
-    vc[pointLength - 1] = 0.0f;
-    F[pointLength - 1] = 0.0f;
+    buf->va[0] = 0.0f; buf->vb[0] = 1.0f; buf->vc[0] = 0.0f; buf->F[0] = 0.0f;
+    buf->va[pointLength - 1] = 0.0f;
+    buf->vb[pointLength - 1] = 1.0f;
+    buf->vc[pointLength - 1] = 0.0f;
+    buf->F[pointLength - 1] = 0.0f;
 
     // прогонка
-    float* alpha = (float*)malloc(sizeof(float) * (pointLength));
-    float* beta  = (float*)malloc(sizeof(float) * (pointLength));
-
-    alpha[1] = - vc[0] / vb[0];
-    beta[1] = F[0] / vb[0];
+    buf->alpha[1] = - buf->vc[0] / buf->vb[0];
+    buf->beta[1] = buf->F[0] / buf->vb[0];
     for (int i = 1; i < pointLength - 1; i++) {
-        alpha[i + 1] = -vc[i] / (va[i] * alpha[i] + vb[i]);
-        beta[i + 1] = (F[i] - va[i] * beta[i]) / (va[i] * alpha[i] + vb[i]);
+        buf->alpha[i + 1] = -buf->vc[i] / (buf->va[i] * buf->alpha[i] + buf->vb[i]);
+        buf->beta[i + 1] = (buf->F[i] - buf->va[i] * buf->beta[i]) / (buf->va[i] * buf->alpha[i] + buf->vb[i]);
     }
-    b[pointLength - 1] = (F[pointLength - 1] - va[pointLength - 1] * beta[pointLength - 1]) / (vb[pointLength - 1] + va[pointLength - 1]  * alpha[pointLength - 1]);
+    buf->b[pointLength - 1] = (buf->F[pointLength - 1] - buf->va[pointLength - 1] * buf->beta[pointLength - 1]) / (buf->vb[pointLength - 1] + buf->va[pointLength - 1]  * buf->alpha[pointLength - 1]);
     for (int i = pointLength - 2; i >= 0; i--) {
-        b[i] = alpha[i + 1] * b[i + 1] + beta[i + 1];
+        buf->b[i] = buf->alpha[i + 1] * buf->b[i + 1] + buf->beta[i + 1];
     }
-
-    free(alpha);
-    free(beta);
-    free(va);
-    free(vb);
-    free(vc);
-    free(F);
     
     for (index = 0; index < pointLength - 1; ++index)
     {
-        a[index] = (b[index+1] - b[index]) / (3*h);
-        c[index] = (pointY[index+1] - pointY[index]) / h - h * (2*b[index] + b[index+1]) / 3;
+        buf->a[index] = (buf->b[index+1] - buf->b[index]) / (3*h);
+        buf->c[index] = (pointY[index+1] - pointY[index]) / h - h * (2*buf->b[index] + buf->b[index+1]) / 3;
     }
-    a[pointLength - 1] = a[pointLength - 2];
-    c[pointLength - 1] = c[pointLength - 2] + 2 * b[pointLength - 2] * h + 3 * a[pointLength - 2] * h * h;
+    buf->a[pointLength - 1] = buf->a[pointLength - 2];
+    buf->c[pointLength - 1] = buf->c[pointLength - 2] + 2 * buf->b[pointLength - 2] * h + 3 * buf->a[pointLength - 2] * h * h;
 
     for (index = 0; index < length; ++index)
     {
         uint32_t num = (uint32_t)((src[index] - pointX[0]) / h);
         float x = src[index] - pointX[num];
-        dst[index] = x * x * (a[num] * x + b[num]) + c[num] * x + pointY[num];
+        dst[index] = x * x * (buf->a[num] * x + buf->b[num]) + buf->c[num] * x + pointY[num];
     }
-
-    free(a);
-    free(b);
-    free(c);
 }

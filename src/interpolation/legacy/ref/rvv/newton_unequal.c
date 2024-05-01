@@ -1,6 +1,6 @@
-#include "comp_methods_rvv.h"
+#include <riscv_vector.h>
 
-void NewtonUnequal(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength)
+inline void newton_rvv(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength)
 {
     float* buf_f = (float*)malloc(sizeof(float) * pointLength);
     

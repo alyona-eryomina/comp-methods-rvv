@@ -9,14 +9,6 @@ void interpolation(float* src, float* dst, uint32_t length, float* pointX, float
     case INT_SPLINE_LIN:
         init_lin_par_buf(&bufLP, pointLength);
         spline_lin(src, dst, length, pointX, pointY, pointLength, &bufLP);
-        // for (int i = 0; i < pointLength; i++) {
-        //     printf("%lf ", bufLP.a[i]);
-        // }
-        // printf("\n");
-        // for (int i = 0; i < pointLength; i++) {
-        //     printf("%lf ", bufLP.b[i]);
-        // }
-        // printf("\n");
         free_lin_par_buf(&bufLP);
         break;
     case INT_SPLINE_PAR:

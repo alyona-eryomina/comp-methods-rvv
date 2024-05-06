@@ -13,7 +13,7 @@ extern inline void spline_par_rvv(float* src, float* dst, uint32_t length, float
 
     uint32_t index;
     buf->b[0] = 0;
-    for (index = 1; index < pointLength - 1; ++index)
+    for (index = 1; index < pointLength; ++index)
     {
         buf->b[index] = 2 * (pointY[index] - pointY[index - 1]) / h - buf->b[index - 1];
     }

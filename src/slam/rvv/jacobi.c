@@ -1,7 +1,4 @@
-#include <riscv_vector.h>
-#include <stdlib.h>
-#include <math.h>
-#include <stdio.h>
+#include "slam.h"
 
 // extern inline uint32_t jacobi_rvv(uint32_t size, double* A, double* b, double* x, double eps) {
 //     double* tmp_x = (double*)malloc(size * sizeof(double));
@@ -11,7 +8,7 @@
 //     for (int i = 0; i < size; i++) {
 //         x[i] = b[i];
 //     }
-
+//
 //     do {
 //         for (int i = 0; i < size; i++) {
 //             tmp_x[i] = b[i];
@@ -22,7 +19,7 @@
 //             }
 //             tmp_x[i] /= A[i * size + i];
 //         }
-
+//
 //         norm = fabs(x[0] - tmp_x[0]);
 //         for (int i = 0; i < size; i++) {
 //             if (fabs(x[i] - tmp_x[i]) > norm) {
@@ -32,7 +29,7 @@
 //         }
 //         iterations++;
 //     } while (norm > eps);
-
+//
 //     free(tmp_x);
 //     return iterations;
 // }
@@ -153,7 +150,7 @@ extern inline uint32_t jacobi_rvv(uint32_t size, double* A, double* b, double* x
     // } while (norm > eps);
 
     free(tmp_x);
-    //free(ind);
-    //free(ax);
+    free(ind);
+    free(ax);
     return iterations;
 }

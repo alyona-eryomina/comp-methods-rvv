@@ -1,6 +1,4 @@
-#include <math.h>
-#include <stdlib.h>
-#include <stdint.h>
+#include "slam.h"
 
 // size - размерность матрицы
 // A - матрица коэффициентов

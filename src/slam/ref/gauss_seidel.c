@@ -1,6 +1,4 @@
-#include <math.h>
-#include <stdlib.h>
-#include <stdint.h>
+#include "slam.h"
 
 static int converge(double* x, double* prev_x, int size, double eps) {
     double norm = 0;

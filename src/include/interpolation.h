@@ -41,12 +41,12 @@ extern void spline_cub_rvv(float* src, float* dst, uint32_t length, float* point
 #define spline_cub spline_cub_rvv
 #elif defined RVV_ASM
 extern void spline_lin_rvv_asm(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength, SplineLinParBuf* buf);
-extern void spline_par_rvv(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength, SplineLinParBuf* buf);
-extern void spline_cub_rvv(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength, SplineCubBuf* buf);
+extern void spline_par_rvv_asm(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength, SplineLinParBuf* buf);
+extern void spline_cub_rvv_asm(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength, SplineCubBuf* buf);
 
 #define spline_lin spline_lin_rvv_asm
-#define spline_par spline_par_rvv
-#define spline_cub spline_cub_rvv
+#define spline_par spline_par_rvv_asm
+#define spline_cub spline_cub_rvv_asm
 #else
 extern void spline_lin(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength, SplineLinParBuf* buf);
 extern void spline_par(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength, SplineLinParBuf* buf);

@@ -11,12 +11,10 @@ set(SOURCE_RVV interpolation/rvv/spline_lin.c
                slam/ref/gauss_seidel.c)
 
 set(SOURCE_ASM interpolation/rvv/asm/spline_lin.s
-               interpolation/rvv/spline_par.c
-               interpolation/rvv/spline_cub.c
+               interpolation/rvv/asm/spline_par.s
+               interpolation/rvv/asm/spline_cub.s
                slam/rvv/jacobi.c
                slam/ref/gauss_seidel.c)
-#set_property(SOURCE interpolation/rvv/asm/spline_lin.s APPEND PROPERTY COMPILE_OPTIONS "-x" "assembler-with-cpp")
-
 
 set(SOURCE_MAIN interpolation/init_buf.c
                 interpolation.c

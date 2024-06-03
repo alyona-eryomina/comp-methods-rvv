@@ -22,7 +22,8 @@ typedef enum {
 
 typedef enum {
     SLAM_JACOBI,
-    SLAM_GAUSS_SEIDEL
+    SLAM_GAUSS_SEIDEL,
+    SLAM_CONJ_GRADIEND
 } SlamMethod;
 
 void interpolation(float* src, float* dst, uint32_t length, float* pointX, float* pointY, uint32_t pointLength, InterpolationMethod method);

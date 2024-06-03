@@ -17,10 +17,10 @@ extern inline void spline_lin_rvv(float* src, float* dst, uint32_t length, float
         size_t l = vsetvl_e32m8(len);
         vPointY = vle32_v_f32m8(pointY + offset, l);
         vPointY1 = vle32_v_f32m8(pointY + 1 + offset, l);
-        vPointX = vle32_v_f32m8(pointX + offset, l);
 
         vA = vfsub_vv_f32m8(vPointY1, vPointY, l);
         vA = vfdiv_vf_f32m8(vA, h, l);
+        vPointX = vle32_v_f32m8(pointX + offset, l);
         vB = vfnmsub_vv_f32m8(vA, vPointX, vPointY, l);
 
         vse32_v_f32m8(buf->a + offset, vA, l);

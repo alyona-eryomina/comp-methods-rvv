@@ -49,14 +49,16 @@ extern inline void spline_par_rvv(float* src, float* dst, uint32_t length, float
         vNum = vfcvt_xu_f_v_u32m1(vTmp, l);
         vNum = vmul_vx_u32m1(vNum, sizeof(float), l);
 
-        vA = vloxei32_v_f32m1(buf->a, vNum, l);
+        vX = vloxei32_v_f32m1(pointX, vNum, l);
+        vSrc2 = vfsub_vv_f32m1(vSrc, vX, l);
+
         vB = vloxei32_v_f32m1(buf->b, vNum, l);
         vC = vloxei32_v_f32m1(pointY, vNum, l);
-        vX = vloxei32_v_f32m1(pointX, vNum, l);
 
-        vSrc2 = vfsub_vv_f32m1(vSrc, vX, l);
         vDst = vfmadd_vv_f32m1(vB, vSrc2, vC, l);
         vSrc2 = vfmul_vv_f32m1(vSrc2, vSrc2, l);
+
+        vA = vloxei32_v_f32m1(buf->a, vNum, l);
         vDst = vfmadd_vv_f32m1(vA, vSrc2, vDst, l);
 
         vse32_v_f32m1(dst + offset, vDst, l);

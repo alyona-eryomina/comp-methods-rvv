@@ -23,8 +23,11 @@ extern inline void spline_cub_rvv(float* src, float* dst, uint32_t length, float
         size_t l = vsetvl_e32m1(len);
 
         vA = vfmv_v_f_f32m1(1.0f, l);
+        vse32_v_f32m1(buf->va + offset, vA, l);
+        vse32_v_f32m1(buf->vc + offset, vA, l);
+
         vB = vfmv_v_f_f32m1(4.0f, l);
-        vC = vfmv_v_f_f32m1(1.0f, l);
+        vse32_v_f32m1(buf->vb + offset, vB, l);
 
         vPointY = vle32_v_f32m1(pointY + offset - 1, l);
         vPointY2 = vle32_v_f32m1(pointY + offset, l);
@@ -33,10 +36,6 @@ extern inline void spline_cub_rvv(float* src, float* dst, uint32_t length, float
         vF = vfsub_vv_f32m1(vPointY, vPointY2, l);
         vF = vfadd_vv_f32m1(vF, vPointY3, l);
         vF = vfmul_vf_f32m1(vF, coef, l);
-
-        vse32_v_f32m1(buf->va + offset, vA, l);
-        vse32_v_f32m1(buf->vb + offset, vB, l);
-        vse32_v_f32m1(buf->vc + offset, vC, l);
         vse32_v_f32m1(buf->F + offset, vF, l);
 
         len -= l;

@@ -12,8 +12,7 @@ static int converge(double* x, double* prev_x, int size, double eps) {
 // A - матрица коэффициентов
 // b - матрица свободных членов
 // х - результат
-extern inline uint32_t gauss_seidel(uint32_t size, double* A, double* b, double* x, double eps) {
-    double* prev_x = (double*)malloc(size * sizeof(double));
+extern inline uint32_t gauss_seidel(uint32_t size, double* A, double* b, double* x, double eps, SLAMGaussBuf* buf) {
     double norm;
     uint32_t iterations = 0;
 
@@ -24,9 +23,7 @@ extern inline uint32_t gauss_seidel(uint32_t size, double* A, double* b, double*
 
     do {
         for (int i = 0; i < size; i++) {
-            prev_x[i] = x[i];
-        }
-        for (int i = 0; i < size; i++) {
+            buf->tmp_x[i] = x[i];
             double var = 0;
             for (int j = 0; j < size; j++) {
                 if (i != j) {
@@ -36,8 +33,7 @@ extern inline uint32_t gauss_seidel(uint32_t size, double* A, double* b, double*
             x[i] = (b[i] - var) / A[i * size + i];
         }
         iterations++;
-    } while (!converge(x, prev_x, size, eps));
+    } while (!converge(x, buf->tmp_x, size, eps));
 
-    free(prev_x);
     return iterations;
 }

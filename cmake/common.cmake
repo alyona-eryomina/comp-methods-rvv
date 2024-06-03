@@ -84,51 +84,6 @@ if(DEFINED CPU)
   set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES CPU)
 endif()
 
-# Syntacore RISC-V/SCR-HAL platform tunings
-# if(CMAKE_SYSTEM_PROCESSOR MATCHES riscv AND CMAKE_SYSTEM_NAME MATCHES Generic)
-#   if(DEFINED ENV{SC_HAL_PATH})
-#     get_filename_component(SC_HAL_PATH $ENV{SC_HAL_PATH} REALPATH)
-#   elseif(EXISTS "${CMAKE_CURRENT_LIST_DIR}/../scr-hal")
-#     get_filename_component(SC_HAL_PATH "${CMAKE_CURRENT_LIST_DIR}/../scr-hal"
-#                            REALPATH)
-#   elseif(DEFINED ENV{SC_BSP_PATH})
-#     get_filename_component(SC_HAL_PATH $ENV{SC_BSP_PATH} REALPATH)
-#   else()
-#     get_filename_component(SC_HAL_PATH "${CMAKE_CURRENT_LIST_DIR}/../bsp"
-#                            REALPATH)
-#   endif()
-
-#   set(SC_HAL_PATH
-#       ${SC_HAL_PATH}
-#       CACHE STRING "SCR-HAL path")
-
-#   # support legacy approach
-#   set(SC_BSP_PATH
-#       ${SC_HAL_PATH}
-#       CACHE STRING "SCR-HAL path (legacy)")
-
-#   if(NOT EXISTS ${SC_HAL_PATH})
-#     message(
-#       FATAL_ERROR "Failed to find scr-hal. Please provide valid SC_HAL_PATH")
-#   endif()
-
-#   if(DEFINED PLATFORM)
-#     if(EXISTS ${CMAKE_SOURCE_DIR}/platform/${PLATFORM}/plf.cmake)
-#       set(PLATFORM_CONFIG_DIR ${CMAKE_SOURCE_DIR}/platform/${PLATFORM})
-#     elseif(EXISTS ${SC_HAL_PATH}/platform/${PLATFORM}/plf.cmake)
-#       set(PLATFORM_CONFIG_DIR ${SC_HAL_PATH}/platform/${PLATFORM})
-#     endif()
-#     if(NOT DEFINED PLATFORM_CONFIG_DIR)
-#       message(FATAL_ERROR "Unknown platform '${PLATFORM}'")
-#     endif()
-#     include(${PLATFORM_CONFIG_DIR}/plf.cmake)
-#     message(STATUS "Apply PLATFORM tunings for '${PLATFORM}'")
-#   endif()
-
-#   set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES PLATFORM SC_HAL_PATH
-#                                            PLATFORM_CONFIG_DIR)
-# endif()
-
 if(NOT DEFINED TARGET_MARCH)
   set(TARGET_MARCH ${MARCH})
 endif()

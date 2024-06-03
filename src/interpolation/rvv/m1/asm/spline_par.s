@@ -104,14 +104,16 @@ spline_par_rvv_asm:
         addi t4, zero, 4
         vmul.vx v3, v3, t4   # vNum = vmul_vx_u32m1(vNum, sizeof(float), l);
 
-        vlxe.v v2, (t2), v3 # vA = vloxei32_v_f32m1(buf->a, vNum, l);
+        vlxe.v v6, (a3), v3 # vX = vloxei32_v_f32m1(pointX, vNum, l);
+        vfsub.vv v6, v0, v6  # vSrc2 = vfsub_vv_f32m1(vSrc, vX, l);
+
         vlxe.v v4, (t3), v3 # vB = vloxei32_v_f32m1(buf->b, vNum, l);
         vlxe.v v5, (a4), v3 # vC = vloxei32_v_f32m1(pointY, vNum, l);
-        vlxe.v v6, (a3), v3 # vX = vloxei32_v_f32m1(pointX, vNum, l);
 
-        vfsub.vv v6, v0, v6  # vSrc2 = vfsub_vv_f32m1(vSrc, vX, l);
         vfmadd.vv v4, v6, v5 # vDst = vfmadd_vv_f32m1(vB, vSrc2, vC, l);
         vfmul.vv v6, v6, v6  # vSrc2 = vfmul_vv_f32m1(vSrc2, vSrc2, l);
+
+        vlxe.v v2, (t2), v3 # vA = vloxei32_v_f32m1(buf->a, vNum, l);
         vfmadd.vv v2, v6, v4 # vDst = vfmadd_vv_f32m1(vA, vSrc2, vDst, l);
 
         vse.v v2, (a1)

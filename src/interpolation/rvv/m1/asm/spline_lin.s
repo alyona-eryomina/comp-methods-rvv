@@ -22,7 +22,7 @@ spline_lin_rvv_asm:
 
     addi t0, a5, -1  # size_t len = pointLength - 1;
     for_point:
-        vsetvli t1, t0, e32, m4  # l = vsetvl_e32m1(len);
+        vsetvli t1, t0, e32, m1  # l = vsetvl_e32m1(len);
 
         sub t0, t0, t1
         slli t1, t1, 2
@@ -30,12 +30,12 @@ spline_lin_rvv_asm:
         vle.v v0, (a4) # vPointY = vle32_v_f32m1(pointY + offset, l);
         addi t4, a4, 4
         vle.v v4, (t4) # vPointY1 = vle32_v_f32m1(pointY + 1 + offset, l);
-        vle.v v8, (a3) # vPointX = vle32_v_f32m1(pointX + offset, l);
 
         vfsub.vv v4, v4, v0  # vA = vfsub_vv_f32m1(vPointY1, vPointY, l);
         vfdiv.vf v4, v4, ft1 # vA = vfdiv_vf_f32m1(vA, h, l);
         vse.v v4, (t2) # vse32_v_f32m1(buf->a + offset, vA, l);
 
+        vle.v v8, (a3) # vPointX = vle32_v_f32m1(pointX + offset, l);
         vfnmsub.vv v4, v8, v0 # vB = vfnmsub_vv_f32m1(vA, vPointX, vPointY, l);
         vse.v v4, (t3) # vse32_v_f32m1(buf->b + offset, vB, l);
 
@@ -55,7 +55,7 @@ spline_lin_rvv_asm:
     ld t2, 0(a6) # a
     ld t3, 8(a6) # b
     for_main:
-        vsetvli t1, t0, e32, m4  # l = vsetvl_e32m1(len);
+        vsetvli t1, t0, e32, m1  # l = vsetvl_e32m1(len);
 
         sub t0, t0, t1
         slli t1, t1, 2
